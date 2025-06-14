@@ -4,7 +4,7 @@ import Popup from "reactjs-popup";
 
 import "./App.css";
 
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect("https://tic-tac-toe-backend-7ctk.onrender.com");
 
 const array = [
   { id: "1", content: "none" },
