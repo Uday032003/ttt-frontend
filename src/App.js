@@ -27,6 +27,7 @@ class App extends Component {
     currentTurn: "",
     notFound: false,
     gameEndText: false,
+    rematchPopup: false,
   };
 
   componentDidMount() {
@@ -109,6 +110,19 @@ class App extends Component {
         array: newArray,
       });
     });
+
+    socket.on("rematch_confirmation", () => {
+      this.setState({ rematchPopup: true });
+    });
+
+    socket.on("rematch_start", () => {
+      this.setState({
+        isPlaying: true,
+        array: array,
+        gameEndText: false,
+        rematchPopup: false,
+      });
+    });
   }
 
   onClickedJoin = () => {
@@ -132,9 +146,23 @@ class App extends Component {
     this.setState({ roomId: createdRoomId, isPlaying: true });
   };
 
+<<<<<<< HEAD
   onClickedRematch = () => {
     this.setState({array: array , gameEndText: false, isPlaying: true})
   }
+=======
+  onClickedLeave = () => {
+    this.setState({
+      isPlaying: false,
+      roomId: "",
+      array: array,
+      player: "",
+      currentTurn: "",
+      gameEndText: false,
+      rematchPopup: false,
+    });
+  };
+>>>>>>> ffc9205 (small update)
 
   render() {
     const {
@@ -145,6 +173,7 @@ class App extends Component {
       player,
       notFound,
       gameEndText,
+      rematchPopup,
     } = this.state;
     return (
       <div className="main-cont">
@@ -233,6 +262,17 @@ class App extends Component {
             {gameEndText && 
               <button type='button' className='join-btn' onClick={this.onClickedRematch}>Rematch</button>}
             {gameEndText && (
+              <button
+                type="button"
+                className="join-btn"
+                onClick={() => {
+                  socket.emit("rematch", roomId);
+                }}
+              >
+                Rematch
+              </button>
+            )}
+            {gameEndText && (
               <>
                 {currentTurn !== player ? (
                   <Popup modal open={gameEndText}>
@@ -255,6 +295,31 @@ class App extends Component {
                 )}
               </>
             )}
+            <Popup modal open={rematchPopup} closeOnDocumentClick={false}>
+              {
+                <div className="rematch-popup">
+                  <p className="para-pp">Opponent requesting to play again</p>
+                  <div className="rematch-btns">
+                    <button
+                      type="button"
+                      onClick={this.onClickedLeave}
+                      className="pp-btn"
+                    >
+                      Leave
+                    </button>
+                    <button
+                      type="button"
+                      className="pp-btn"
+                      onClick={() => {
+                        socket.emit("rematch_confirmed", roomId);
+                      }}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              }
+            </Popup>
           </>
         ) : null}
       </div>

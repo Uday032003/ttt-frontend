@@ -61,6 +61,7 @@ body {
   border: none;
   border-radius: 5px;
   font-family: "Roboto";
+  cursor: pointer;
 }
 
 .join-btn {
@@ -74,6 +75,7 @@ body {
   border-radius: 5px;
   font-family: "Roboto";
   margin-top: 10px;
+  cursor: pointer;
 }
 
 .inp {
@@ -141,4 +143,38 @@ body {
   backdrop-filter: blur(
     10px
   ); /* true blur effect (only on supported browsers) */
+}
+
+.rematch-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: "Roboto";
+}
+
+.rematch-btns {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.para-pp {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.pp-btn {
+  font-family: "Roboto";
+  font-size: 14px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: white;
+  border: 1px solid grey;
+  border-radius: 5px;
+  cursor: pointer;
 }
