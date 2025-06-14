@@ -4,7 +4,7 @@ import Popup from "reactjs-popup";
 
 import "./App.css";
 
-const socket = io.connect("https://tic-tac-toe-backend-7ctk.onrender.com");
+const socket = io.connect("http://localhost:3001");
 
 const array = [
   { id: "1", content: "none" },
@@ -146,11 +146,6 @@ class App extends Component {
     this.setState({ roomId: createdRoomId, isPlaying: true });
   };
 
-<<<<<<< HEAD
-  onClickedRematch = () => {
-    this.setState({array: array , gameEndText: false, isPlaying: true})
-  }
-=======
   onClickedLeave = () => {
     this.setState({
       isPlaying: false,
@@ -162,7 +157,6 @@ class App extends Component {
       rematchPopup: false,
     });
   };
->>>>>>> ffc9205 (small update)
 
   render() {
     const {
@@ -259,8 +253,6 @@ class App extends Component {
                 )}
               </>
             )}
-            {gameEndText && 
-              <button type='button' className='join-btn' onClick={this.onClickedRematch}>Rematch</button>}
             {gameEndText && (
               <button
                 type="button"
