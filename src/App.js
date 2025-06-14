@@ -230,7 +230,8 @@ class App extends Component {
                 )}
               </>
             )}
-            <button type='button' className='join-btn' onClick={this.onClickedRematch}>Rematch</button>
+            {gameEndText && 
+              <button type='button' className='join-btn' onClick={this.onClickedRematch}>Rematch</button>}
             {gameEndText && (
               <>
                 {currentTurn !== player ? (
