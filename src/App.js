@@ -132,6 +132,10 @@ class App extends Component {
     this.setState({ roomId: createdRoomId, isPlaying: true });
   };
 
+  onClickedRematch = () => {
+    this.setState({array: array , gameEndText: false, isPlaying: true})
+  }
+
   render() {
     const {
       roomId,
@@ -226,6 +230,7 @@ class App extends Component {
                 )}
               </>
             )}
+            <button type='button' className='join-btn' onClick={this.onClickedRematch}>Rematch</button>
             {gameEndText && (
               <>
                 {currentTurn !== player ? (
