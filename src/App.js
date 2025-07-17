@@ -242,8 +242,6 @@ class App extends Component {
                               id: i.id,
                               roomId: roomId,
                             });
-                            const audio = new Audio(click);
-                            audio.play();
                           }
                         : undefined
                     }
