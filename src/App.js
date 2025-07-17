@@ -2,9 +2,11 @@ import { Component } from "react";
 import io from "socket.io-client";
 import Popup from "reactjs-popup";
 
+import click from "./assets/click.mp3";
+
 import "./App.css";
 
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect("https://ttt-backend-oddm.onrender.com");
 
 const array = [
   { id: "1", content: "none" },
@@ -28,6 +30,8 @@ class App extends Component {
     notFound: false,
     gameEndText: false,
     rematchPopup: false,
+    gameOver: false,
+    isJoined: false,
   };
 
   componentDidMount() {
@@ -44,11 +48,18 @@ class App extends Component {
       });
     });
 
+    socket.on("another_player_joined", () => {
+      this.setState({ isJoined: true });
+    });
+
     socket.on("box_clicked_response", (data) => {
+      const audio = new Audio(click);
+      audio.play();
       const { array } = this.state;
       const newArray = array.map((j) =>
         j.id === data.id ? { ...j, content: data.content } : j
       );
+      const filterArray = newArray.filter((i) => i.content === "none");
       if (
         (newArray[0].content === "cross" &&
           newArray[1].content === "cross" &&
@@ -104,6 +115,8 @@ class App extends Component {
           gameEndText: true,
           currentTurn: data.player,
         });
+      } else if (filterArray.length === 0) {
+        this.setState({ gameOver: true });
       }
       this.setState({
         currentTurn: data.player,
@@ -112,7 +125,7 @@ class App extends Component {
     });
 
     socket.on("rematch_confirmation", () => {
-      this.setState({ rematchPopup: true });
+      this.setState({ rematchPopup: true, gameOver: false });
     });
 
     socket.on("rematch_start", () => {
@@ -121,6 +134,7 @@ class App extends Component {
         array: array,
         gameEndText: false,
         rematchPopup: false,
+        gameOver: false,
       });
     });
   }
@@ -168,6 +182,8 @@ class App extends Component {
       notFound,
       gameEndText,
       rematchPopup,
+      gameOver,
+      isJoined,
     } = this.state;
     return (
       <div className="main-cont">
@@ -201,6 +217,7 @@ class App extends Component {
             <p className="room-id">
               Room ID : <span className="span-ele">{roomId}</span>
             </p>
+            {isJoined && <p className="opp-join">Opponent Joined</p>}
             {isPlaying && (
               <>
                 {currentTurn === player ? (
@@ -225,6 +242,8 @@ class App extends Component {
                               id: i.id,
                               roomId: roomId,
                             });
+                            const audio = new Audio(click);
+                            audio.play();
                           }
                         : undefined
                     }
@@ -249,20 +268,9 @@ class App extends Component {
                 {currentTurn !== player ? (
                   <h1 className="y-w">You Won The Game </h1>
                 ) : (
-                  <h1 className="o-w">Opponent Won The Game </h1>
+                  <h1 className="o-w">You Lost The Game </h1>
                 )}
               </>
-            )}
-            {gameEndText && (
-              <button
-                type="button"
-                className="join-btn"
-                onClick={() => {
-                  socket.emit("rematch", roomId);
-                }}
-              >
-                Rematch
-              </button>
             )}
             {gameEndText && (
               <>
@@ -280,7 +288,7 @@ class App extends Component {
                     {
                       <div className="pp-cont">
                         <p className="emoji">☹️</p>
-                        <h1 className="o-w">Opponent Won The Game </h1>
+                        <h1 className="o-w">You Lost The Game </h1>
                       </div>
                     }
                   </Popup>
@@ -314,6 +322,34 @@ class App extends Component {
             </Popup>
           </>
         ) : null}
+        {(gameEndText || gameOver) && (
+          <button
+            type="button"
+            className="join-btn"
+            onClick={() => {
+              socket.emit("rematch", roomId);
+            }}
+          >
+            Rematch
+          </button>
+        )}
+        <Popup modal open={gameOver}>
+          {
+            <div className="pp-cont">
+              <p className="emoji">🫠</p>
+              <h1 className="o-w">Game Over</h1>
+              <button
+                type="button"
+                className="join-btn"
+                onClick={() => {
+                  socket.emit("rematch", roomId);
+                }}
+              >
+                Rematch
+              </button>
+            </div>
+          }
+        </Popup>
       </div>
     );
   }
